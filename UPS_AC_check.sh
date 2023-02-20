@@ -1,7 +1,5 @@
 #!/bin/bash
 
-##exit;
-
 ########## USAGE BEGIN ##########
 # Two ways:
 ## One to run the script for infnite loop, put it in rcS.d or rc.local
@@ -16,7 +14,7 @@
 # |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
 # |  |  |  |  |
 # *  *  *  *  * user-name command to be executed
-##*/2 * * * * root /pub/sh/luis_cron.ups.check.sh 
+##*/2 * * * * root /xxx/sh/UPS_AC_check.sh 
 ########## USAGE END ##########
 
 ########## CONFIG BEGIN ##########
@@ -27,7 +25,7 @@ DEBUG=0
 # set LOOP to 0 for do it once
 # set LOOP to 1 for endless loop
 LOOP=0
-# time gap between LOOP, seconds
+# time gap between LOOP, in seconds
 LOOP_GAP=120
 ########## CONFIG END ##########
 
@@ -38,6 +36,7 @@ GWIP='192.168.8.250'
 while true
 do
 	
+	# get default gateway ip
 	let N=0
 	for x in `/sbin/route | grep default`
 	do
@@ -79,12 +78,12 @@ do
 			# $ret = 1
 			# if router fail, it means 220V is down, or network is down
 			#pscnt=`ps aux | grep shutdown | grep -v grep | wc -l`
-            if test -f "${SDFILE}"; then
-			    pscnt=`cat ${SDFILE} | wc -l`
-            else
-                pscnt=0
-            fi
-
+			if test -f "${SDFILE}"; then
+				pscnt=`cat ${SDFILE} | wc -l`
+			else
+				pscnt=0
+			fi
+			
 			if [ $pscnt -eq 0 ]; then
 				# if no shutdown in progress, then shutdown
 				if [ $DEBUG -eq 1 ]; then
